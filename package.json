@@ -1,0 +1,19 @@
+{
+  "name": "crafting-an-interpreter",
+  "version": "1.0.0",
+  "description": "Crafting an interpreter/compiler with TypeScript",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "keywords": [],
+  "repository": "git@github.com:yazaldefilimonepinto/crafting-an-interpreter.git",
+  "author": "Yazalde Filimone <yazaldefilimon@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "tsup": "^6.7.0",
+    "typescript": "^5.0.4",
+    "vitest": "^0.31.1"
+  }
+}
