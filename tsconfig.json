@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "module": "commonjs",
+    "target": "ES6",
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "rootDirs": ["src", "tests"],
+    "baseUrl": "src",
+    "paths": {
+      "~/tests/*": ["../tests/*"],
+      "~/*": ["*"]
+    }
+  },
+  "types": ["vitest/globals", "./node_modules/@types"],
+  "include": ["src", "tests"],
+  "exclude": []
+}

@@ -15,9 +15,10 @@
   "author": "Yazalde Filimone <yazaldefilimon@gmail.com>",
   "license": "ISC",
   "devDependencies": {
+    "@types/jest": "^29.5.1",
+    "@types/node": "^20.2.1",
     "tsup": "^6.7.0",
     "typescript": "^5.0.4",
-    "vitest": "^0.31.1",
-    "@types/node": "^20.2.1"
+    "vitest": "^0.31.1"
   }
 }
