@@ -7,6 +7,9 @@
     "test": "vitest",
     "test:coverage": "vitest run --coverage"
   },
+  "engines": {
+    "node": "18x"
+  },
   "keywords": [],
   "repository": "git@github.com:yazaldefilimonepinto/crafting-an-interpreter.git",
   "author": "Yazalde Filimone <yazaldefilimon@gmail.com>",
@@ -14,6 +17,7 @@
   "devDependencies": {
     "tsup": "^6.7.0",
     "typescript": "^5.0.4",
-    "vitest": "^0.31.1"
+    "vitest": "^0.31.1",
+    "@types/node": "^20.2.1"
   }
 }
