@@ -8,6 +8,7 @@ const makeSut = () => {
     record,
   };
 };
+
 describe("Environment", () => {
   it("should save name and value in storage and returned", () => {
     const { sut, record } = makeSut();
