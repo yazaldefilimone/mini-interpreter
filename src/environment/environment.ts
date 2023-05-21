@@ -4,8 +4,14 @@ export class Environment {
     this.record = record;
   }
 
-  define<T = any>(name: string, value: T) {
+  public define<T = any>(name: string, value: T) {
     this.record[name] = value;
     return value;
+  }
+  public lookup(name: string) {
+    if (!this.record.hasOwnProperty(name)) {
+      throw `Variable "${name}" has not been defined.`;
+    }
+    return this.record[name];
   }
 }
