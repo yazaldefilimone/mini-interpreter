@@ -10,6 +10,12 @@ export class SelfEvaluation {
       return ex.slice(1, -1);
     }
 
+    if (ex.at(0) === "+") {
+      return this.eva(ex.at(1)) + this.eva(ex.at(2));
+    }
+    if (ex.at(0) === "*") {
+      return this.eva(ex.at(1)) * this.eva(ex.at(2));
+    }
     throw `Type Error: ${typeof ex}: unimplemented!`;
   }
 }
