@@ -12,7 +12,7 @@ const makeSut = () => {
   };
 };
 
-describe("Evaluator", () => {
+describe("Evaluator Block Scope", () => {
   it("evaluator scope block: should  can be access value in scope", () => {
     const { sut } = makeSut();
     const result = sut.eva(["begin", ["var", "x", 10], ["var", "y", 20], ["*", "x", "y"]]);
