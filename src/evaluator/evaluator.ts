@@ -42,6 +42,32 @@ export class Evaluator {
       const newEnv = new Environment({}, env);
       return this._evalBlock(exp, newEnv);
     }
+    // compaction operator
+    if (exp.at(0) === ">") {
+      return this.eva(exp.at(1), env) > this.eva(exp.at(2), env);
+    }
+    if (exp.at(0) === ">=") {
+      return this.eva(exp.at(1), env) >= this.eva(exp.at(2), env);
+    }
+    if (exp.at(0) === "<") {
+      return this.eva(exp.at(1), env) < this.eva(exp.at(2), env);
+    }
+
+    if (exp.at(0) === "<=") {
+      return this.eva(exp.at(1), env) <= this.eva(exp.at(2), env);
+    }
+    if (exp.at(0) === "=") {
+      return this.eva(exp.at(1), env) === this.eva(exp.at(2), env);
+    }
+    // if
+    if (exp.at(0) === "if") {
+      const [_tag, expression, consequent, alternative] = exp;
+      if (this.eva(expression, env)) {
+        return this.eva(consequent, env);
+      }
+      return this.eva(alternative, env);
+    }
+
     throw `Type Error: ${JSON.stringify(exp)}: unimplemented!`;
   }
   private _evalBlock(exp: expType, env: Environment) {
