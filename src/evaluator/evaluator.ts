@@ -67,8 +67,16 @@ export class Evaluator {
       }
       return this.eva(alternative, env);
     }
-
-    throw `Type Error: ${JSON.stringify(exp)}: unimplemented!`;
+    // while
+    if (exp.at(0) === "while") {
+      const [_tag, condition, body] = exp;
+      let result: unknown;
+      while (this.eva(condition, env)) {
+        result = this.eva(body);
+      }
+      return result;
+    }
+    throw `Type Error: ${JSON.stringify(typeof exp === "object" ? exp.at(0) : exp)} unimplemented!`;
   }
   private _evalBlock(exp: expType, env: Environment) {
     let result: unknown;
