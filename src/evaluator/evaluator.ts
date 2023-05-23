@@ -1,28 +1,22 @@
-import { Environment } from "environment";
+import { Environment, globalEnvironment } from "environment";
 
 type expType<T = any | unknown> = T;
 
 export class Evaluator {
   private globalEnv: Environment;
-  constructor(globalEnv = new Environment()) {
+  constructor(globalEnv = globalEnvironment) {
     this.globalEnv = globalEnv;
   }
 
   eva(exp: expType, env = this.globalEnv) {
-    if (isNumber(exp)) {
+    if (this._isNumber(exp)) {
       return exp;
     }
 
-    if (isString(exp)) {
+    if (this._isString(exp)) {
       return exp.slice(1, -1);
     }
-    // math
-    if (exp.at(0) === "+") {
-      return this.eva(exp.at(1), env) + this.eva(exp.at(2), env);
-    }
-    if (exp.at(0) === "*") {
-      return this.eva(exp.at(1), env) * this.eva(exp.at(2), env);
-    }
+
     // variables
     if (exp.at(0) === "var") {
       const [_, name, value] = exp;
@@ -33,31 +27,13 @@ export class Evaluator {
       return env.assign(name, this.eva(value, env));
     }
 
-    if (isVariableName(exp)) {
+    if (this._isVariableName(exp)) {
       return env.lookup(exp);
     }
     // block scope
-
     if (exp.at(0) === "begin") {
       const newEnv = new Environment({}, env);
       return this._evalBlock(exp, newEnv);
-    }
-    // compaction operator
-    if (exp.at(0) === ">") {
-      return this.eva(exp.at(1), env) > this.eva(exp.at(2), env);
-    }
-    if (exp.at(0) === ">=") {
-      return this.eva(exp.at(1), env) >= this.eva(exp.at(2), env);
-    }
-    if (exp.at(0) === "<") {
-      return this.eva(exp.at(1), env) < this.eva(exp.at(2), env);
-    }
-
-    if (exp.at(0) === "<=") {
-      return this.eva(exp.at(1), env) <= this.eva(exp.at(2), env);
-    }
-    if (exp.at(0) === "=") {
-      return this.eva(exp.at(1), env) === this.eva(exp.at(2), env);
     }
     // if
     if (exp.at(0) === "if") {
@@ -69,12 +45,26 @@ export class Evaluator {
     }
     // while
     if (exp.at(0) === "while") {
+      console.log("hei");
+
       const [_tag, condition, body] = exp;
       let result: unknown;
+      console.log({ body, condition, ex: this.eva(condition, env) });
+
       while (this.eva(condition, env)) {
-        result = this.eva(body);
+        result = this.eva(body, env);
+        console.log({ body });
       }
       return result;
+    }
+    // functions:native/user
+
+    if (Array.isArray(exp)) {
+      const fn = this.eva(exp.at(0), env);
+      const args = exp.slice(1).map((e) => this.eva(e, env));
+      if (typeof fn === "function") {
+        return fn(...args);
+      }
     }
     throw `Type Error: ${JSON.stringify(typeof exp === "object" ? exp.at(0) : exp)} unimplemented!`;
   }
@@ -86,15 +76,14 @@ export class Evaluator {
     });
     return result;
   }
-}
+  private _isNumber(exp: expType) {
+    return typeof exp === "number";
+  }
+  private _isString(exp: expType) {
+    return typeof exp === "string" && exp[0] === '"' && exp.at(-1) === '"';
+  }
 
-function isNumber(exp: expType) {
-  return typeof exp === "number";
-}
-function isString(exp: expType) {
-  return typeof exp === "string" && exp[0] === '"' && exp.at(-1) === '"';
-}
-
-function isVariableName(exp: expType) {
-  return typeof exp === "string" && /^[a-zA-Z][a-zA-Z)-9_]*$/.test(exp);
+  private _isVariableName(exp: expType) {
+    return typeof exp === "string" && /^[+\-*/<>=a-zA-Z][a-zA-Z)-9_]*$/.test(exp);
+  }
 }

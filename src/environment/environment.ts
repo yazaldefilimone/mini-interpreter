@@ -28,3 +28,43 @@ export class Environment {
     return this.parent.resolve(name);
   }
 }
+
+export const globalEnvironment = new Environment({
+  true: true,
+  false: false,
+  null: null,
+  "+"(opOne: number, opTwo: number) {
+    return opOne + opTwo;
+  },
+  "-"(opOne: number, opTwo: number = null) {
+    if (opTwo === null) {
+      return -opOne;
+    }
+    return opOne - opTwo;
+  },
+  "*"(opOne: number, opTwo: number) {
+    return opOne * opTwo;
+  },
+  "/"(opOne: number, opTwo: number) {
+    return opOne / opTwo;
+  },
+  "="(opOne: number, opTwo: number) {
+    return opOne === opTwo;
+  },
+
+  "<="(opOne: number, opTwo: number) {
+    return opOne <= opTwo;
+  },
+  ">="(opOne: number, opTwo: number) {
+    return opOne >= opTwo;
+  },
+  ">"(opOne: number, opTwo: number) {
+    return opOne > opTwo;
+  },
+  "<"(opOne: number, opTwo: number) {
+    return opOne < opTwo;
+  },
+  print(...args: any[]) {
+    console.log(args);
+  },
+});

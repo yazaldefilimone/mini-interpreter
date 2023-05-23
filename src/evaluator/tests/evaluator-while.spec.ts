@@ -1,4 +1,5 @@
 import { Evaluator } from "evaluator";
+import { parserCode } from "tests/main";
 
 const makeSut = () => {
   const sut = new Evaluator();
@@ -12,17 +13,27 @@ describe("Evaluator", () => {
     const { sut } = makeSut();
     const secondScop = [
       "begin",
-      ["var", "y", 0],
+
       ["var", "counter", 0],
+
       [
         "while",
-        ["<", "y", 10],
-        ["begin", ["set", "y", ["+", "x", 1]]],
+        ["<", "counter", 10],
+        // counter++
+        // TODO: implement ['++', <Exp>]
         ["set", "counter", ["+", "counter", 1]],
-        "counter",
       ],
+
+      "counter",
     ];
 
     expect(sut.eva(secondScop)).toBe(10);
+  });
+  it("test parser", () => {
+    const { sut } = makeSut();
+    const code = `(begin (var y 10) y)`;
+    const codeParser = parserCode(code);
+    console.log({ codeParser });
+    expect(sut.eva(parserCode(code))).toBe(10);
   });
 });

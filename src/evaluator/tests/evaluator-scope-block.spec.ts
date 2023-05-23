@@ -2,13 +2,11 @@ import { Environment } from "environment";
 import { Evaluator } from "evaluator";
 
 const makeSut = () => {
-  const environment = new Environment({ age: 18, true: true, false: false, null: null, my_name: "Yazalde Filimone" });
   const sut = new Evaluator();
-  const evaluator = new Evaluator(environment);
+  const evaluator = new Evaluator();
   return {
     sut,
     evaluator,
-    environment,
   };
 };
 
