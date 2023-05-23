@@ -1,5 +1,5 @@
-import { Evaluator } from "evaluator";
-import { parserCode } from "tests/main";
+import { Evaluator } from 'evaluator';
+import { parserCode } from 'tests/main';
 
 const makeSut = () => {
   const sut = new Evaluator();
@@ -8,32 +8,31 @@ const makeSut = () => {
   };
 };
 
-describe("Evaluator", () => {
-  it("while: should return the correct sum of two numbers", () => {
+describe('Evaluator', () => {
+  it('while: should return the correct sum of two numbers', () => {
     const { sut } = makeSut();
     const secondScop = [
-      "begin",
+      'begin',
 
-      ["var", "counter", 0],
+      ['var', 'counter', 0],
 
       [
-        "while",
-        ["<", "counter", 10],
+        'while',
+        ['<', 'counter', 10],
         // counter++
         // TODO: implement ['++', <Exp>]
-        ["set", "counter", ["+", "counter", 1]],
+        ['set', 'counter', ['+', 'counter', 1]],
       ],
 
-      "counter",
+      'counter',
     ];
 
     expect(sut.eva(secondScop)).toBe(10);
   });
-  it("test parser", () => {
+  it('test parser', () => {
     const { sut } = makeSut();
     const code = `(begin (var y 10) y)`;
     const codeParser = parserCode(code);
-    console.log({ codeParser });
-    expect(sut.eva(parserCode(code))).toBe(10);
+    expect(sut.eva(codeParser)).toBe(10);
   });
 });
