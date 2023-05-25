@@ -55,12 +55,18 @@ export class Evaluator {
     // functions:user
     if (exp.at(0) === 'def') {
       const [_tag, name, params, body] = exp;
+      const evaExp = ['var', name, ['lambda', params, body]];
+      return this.eva(evaExp, env);
+    }
+    // lambda
+    if (exp.at(0) === 'lambda') {
+      const [_tag, params, body] = exp;
       const fn = {
         params,
         body,
         env,
       };
-      return env.define(name, fn);
+      return fn;
     }
     // functions:native/user
 
