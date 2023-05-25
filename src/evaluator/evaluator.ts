@@ -1,11 +1,14 @@
 import { Environment, globalEnvironment } from 'environment';
+import { Transformer } from 'transformer';
 
 type expType<T = any | unknown> = T;
 
 export class Evaluator {
   private globalEnv: Environment;
+  private _transformer: Transformer;
   constructor(globalEnv = globalEnvironment) {
     this.globalEnv = globalEnv;
+    this._transformer = new Transformer();
   }
 
   eva(exp: expType, env = this.globalEnv) {
@@ -54,8 +57,7 @@ export class Evaluator {
     }
     // functions:user
     if (exp.at(0) === 'def') {
-      const [_tag, name, params, body] = exp;
-      const evaExp = ['var', name, ['lambda', params, body]];
+      const evaExp = this._transformer.transformerDefToLambda(exp);
       return this.eva(evaExp, env);
     }
     // lambda
@@ -67,6 +69,11 @@ export class Evaluator {
         env,
       };
       return fn;
+    }
+    // switch
+    if (exp.at(0) === 'switch') {
+      const evaExp = this._transformer.transformerSwitchToIf(exp);
+      return this.eva(evaExp, env);
     }
     // functions:native/user
 
