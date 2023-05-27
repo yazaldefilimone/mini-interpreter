@@ -33,38 +33,38 @@ export const globalEnvironment = new Environment({
   true: true,
   false: false,
   null: null,
-  "+"(opOne: number, opTwo: number) {
+  '+'(opOne: number, opTwo: number) {
     return opOne + opTwo;
   },
-  "-"(opOne: number, opTwo: number = null) {
+  '-'(opOne: number, opTwo: number = null) {
     if (opTwo === null) {
       return -opOne;
     }
     return opOne - opTwo;
   },
-  "*"(opOne: number, opTwo: number) {
+  '*'(opOne: number, opTwo: number) {
     return opOne * opTwo;
   },
-  "/"(opOne: number, opTwo: number) {
+  '/'(opOne: number, opTwo: number) {
     return opOne / opTwo;
   },
-  "="(opOne: number, opTwo: number) {
+  '='(opOne: number, opTwo: number) {
     return opOne === opTwo;
   },
 
-  "<="(opOne: number, opTwo: number) {
+  '<='(opOne: number, opTwo: number) {
     return opOne <= opTwo;
   },
-  ">="(opOne: number, opTwo: number) {
+  '>='(opOne: number, opTwo: number) {
     return opOne >= opTwo;
   },
-  ">"(opOne: number, opTwo: number) {
+  '>'(opOne: number, opTwo: number) {
     return opOne > opTwo;
   },
-  "<"(opOne: number, opTwo: number) {
+  '<'(opOne: number, opTwo: number) {
     return opOne < opTwo;
   },
   print(...args: any[]) {
-    console.log(args);
+    console.log(args.length > 2 ? args : args.at(0));
   },
 });
