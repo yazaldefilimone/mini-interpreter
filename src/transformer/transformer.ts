@@ -22,4 +22,20 @@ export class Transformer {
 
     return ifExp;
   }
+  transformerForToWhile(exp: unknown[]): unknown[] {
+    const [_tag, counter, condition, ...rest] = exp;
+    const whileExp = ['begin', counter, ['while', condition, ['begin', ...rest]]];
+    return whileExp;
+  }
+
+  transformerIncrementeToSet(exp: unknown[]) {
+    const [_tag, name, num] = exp;
+
+    return num ? ['set', name, ['+', name, num]] : ['set', name, ['+', name, 1]];
+  }
+
+  transformerDecrementeToSet(exp: unknown[]) {
+    const [_tag, name, num] = exp;
+    return num ? ['set', name, ['-', name, num]] : ['set', name, ['-', name, 1]];
+  }
 }
