@@ -12,6 +12,9 @@ export class Evaluator {
   }
 
   eva(exp: expType, env = this.globalEnv) {
+    if (!Boolean(exp)) {
+      return exp;
+    }
     if (this._isNumber(exp)) {
       return exp;
     }
@@ -25,6 +28,8 @@ export class Evaluator {
       const [_, name, value] = exp;
       return env.define(name, this.eva(value, env));
     }
+    // return ['set', ['+', name, 1]];
+
     if (exp.at(0) === 'set') {
       const [_, name, value] = exp;
       return env.assign(name, this.eva(value, env));
@@ -50,10 +55,16 @@ export class Evaluator {
     if (exp.at(0) === 'while') {
       const [_tag, condition, body] = exp;
       let result: unknown;
+      // console.log({ body });
       while (this.eva(condition, env)) {
         result = this.eva(body, env);
       }
       return result;
+    }
+    // for
+    if (exp.at(0) === 'for') {
+      const whileExp = this._transformer.transformerForToWhile(exp);
+      return this.eva(whileExp, env);
     }
     // functions:user
     if (exp.at(0) === 'def') {
@@ -70,9 +81,31 @@ export class Evaluator {
       };
       return fn;
     }
+
     // switch
     if (exp.at(0) === 'switch') {
       const evaExp = this._transformer.transformerSwitchToIf(exp);
+      return this.eva(evaExp, env);
+    }
+
+    // ++
+    if (exp.at(0) === '++') {
+      const evaExp = this._transformer.transformerIncrementeToSet(exp);
+      return this.eva(evaExp, env);
+    }
+    // --
+    if (exp.at(0) === '--') {
+      const evaExp = this._transformer.transformerDecrementeToSet(exp);
+      return this.eva(evaExp, env);
+    }
+    // +=
+    if (exp.at(0) === '+=') {
+      const evaExp = this._transformer.transformerIncrementeToSet(exp);
+      return this.eva(evaExp, env);
+    }
+    // -=
+    if (exp.at(0) === '-=') {
+      const evaExp = this._transformer.transformerDecrementeToSet(exp);
       return this.eva(evaExp, env);
     }
     // functions:native/user
