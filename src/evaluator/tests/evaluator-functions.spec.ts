@@ -35,7 +35,6 @@ describe('Evaluator', () => {
             (def fnr (n)
              (+ (+ sum n) global)
             )
-
             fnr
           )
         )
