@@ -43,10 +43,10 @@ describe('Evaluator', () => {
     const code = `
       (begin 
        (
-        var function (lambda (x) (* x x))
+        var aFn (lambda (x) (* x x))
        )
 
-       (function 2)
+       (aFn 2)
       )
     `;
     expect(evaParser(code)).toBe(2 * 2);
