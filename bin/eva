@@ -1,0 +1,20 @@
+#!/usr/bin/env node
+
+'use strict';
+const fs = require('fs');
+const { evaGlobal } = require('../dist/tests/main.js');
+
+function main(argv) {
+  const [_node, _path, mode, exp] = argv;
+
+  if (mode === '-e') {
+    return evaGlobal(exp);
+  }
+
+  if (mode === '-f') {
+    const src = fs.readFileSync(exp, 'utf-8');
+    return evaGlobal(src);
+  }
+}
+
+main(process.argv);
