@@ -16,6 +16,10 @@ export class Evaluator {
     this._transformer = new Transformer();
   }
 
+  evaGlobal(expressions: unknown) {
+    return this._evalBlock(['block', expressions], this.globalEnv);
+  }
+
   eva(exp: expType, env = this.globalEnv) {
     if (!Boolean(exp)) {
       return exp;
@@ -123,6 +127,13 @@ export class Evaluator {
 
       const instanceEnvironment = this.eva(instance, env);
       return instanceEnvironment.lookup(name);
+    }
+
+    // super:inheritance
+    if (exp.at(0) === 'super') {
+      const [_tag, className] = exp;
+      console.log({ className });
+      return this.eva(className, env)?.parent;
     }
     // switch
     if (exp.at(0) === 'switch') {
