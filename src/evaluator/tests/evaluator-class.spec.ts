@@ -9,11 +9,11 @@ const makeSut = () => {
 };
 
 describe('Evaluator', () => {
-  it('sort suga expression', () => {
+  it('object oriented programming', () => {
     const { sut } = makeSut();
     const code = `
     (begin 
-      class Math null 
+      (class Math null 
         (begin
           (def constructor (this x y)
             (begin
@@ -25,7 +25,7 @@ describe('Evaluator', () => {
           (def calc (this)
             (+ (prop this x) (prop this y))
           )
-        )
+        ))
     
       (var math (new Math 10 20))
 

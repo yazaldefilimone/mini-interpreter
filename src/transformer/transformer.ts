@@ -1,10 +1,10 @@
 export class Transformer {
-  transformerDefToLambda(exp: unknown[]) {
+  defToLambda(exp: unknown[]) {
     const [_tag, name, params, body] = exp;
     const evaExp = ['var', name, ['lambda', params, body]];
     return evaExp;
   }
-  transformerSwitchToIf(exp: unknown[]) {
+  switchToIf(exp: unknown[]) {
     const [_tag, ...cases] = exp;
     const ifExp: unknown[] = ['if', null, null, null];
     let current = ifExp;
@@ -22,19 +22,19 @@ export class Transformer {
 
     return ifExp;
   }
-  transformerForToWhile(exp: unknown[]): unknown[] {
+  forToWhile(exp: unknown[]): unknown[] {
     const [_tag, counter, condition, ...rest] = exp;
     const whileExp = ['begin', counter, ['while', condition, ['begin', ...rest]]];
     return whileExp;
   }
 
-  transformerIncrementeToSet(exp: unknown[]) {
+  incrementeToSet(exp: unknown[]) {
     const [_tag, name, num] = exp;
 
     return num ? ['set', name, ['+', name, num]] : ['set', name, ['+', name, 1]];
   }
 
-  transformerDecrementeToSet(exp: unknown[]) {
+  decrementeToSet(exp: unknown[]) {
     const [_tag, name, num] = exp;
     return num ? ['set', name, ['-', name, num]] : ['set', name, ['-', name, 1]];
   }

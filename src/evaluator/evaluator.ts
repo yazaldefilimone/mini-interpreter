@@ -1,7 +1,12 @@
 import { Environment, globalEnvironment } from 'environment';
 import { Transformer } from 'transformer';
 
-type expType<T = any | unknown> = T;
+type expType = any;
+type userFnType = {
+  params: unknown[];
+  body: unknown[];
+  env: Environment;
+};
 
 export class Evaluator {
   private globalEnv: Environment;
@@ -31,8 +36,15 @@ export class Evaluator {
     // return ['set', ['+', name, 1]];
 
     if (exp.at(0) === 'set') {
-      const [_, name, value] = exp;
-      return env.assign(name, this.eva(value, env));
+      const [_, ref, value] = exp;
+      // (set <name> (prop classInstance prop))
+      if (Array.isArray(ref) && ref.at(0) === 'prop') {
+        const [_tag, instance, propName] = ref;
+        const instanceEnvironment = this.eva(instance, env);
+
+        return instanceEnvironment.define(propName, this.eva(value, env));
+      }
+      return env.assign(ref, this.eva(value, env));
     }
 
     if (this._isVariableName(exp)) {
@@ -63,12 +75,12 @@ export class Evaluator {
     }
     // for
     if (exp.at(0) === 'for') {
-      const whileExp = this._transformer.transformerForToWhile(exp);
+      const whileExp = this._transformer.forToWhile(exp);
       return this.eva(whileExp, env);
     }
     // functions:user
     if (exp.at(0) === 'def') {
-      const evaExp = this._transformer.transformerDefToLambda(exp);
+      const evaExp = this._transformer.defToLambda(exp);
       return this.eva(evaExp, env);
     }
     // lambda
@@ -81,31 +93,61 @@ export class Evaluator {
       };
       return fn;
     }
+    // class
+    if (exp.at(0) === 'class') {
+      const [_tag, name, parent, body] = exp;
+      const parentEnvironment = this.eva(parent, env) ?? env;
 
+      const classEnvironment = new Environment({}, parentEnvironment);
+      this._evalBody(body, classEnvironment);
+
+      return env.define(name, classEnvironment);
+    }
+    // new: instance of class
+    if (exp.at(0) === 'new') {
+      const classEnvironment = this.eva(exp.at(1), env);
+      const instanceEnvironment = new Environment({}, classEnvironment);
+      const args = exp.slice(2).map((arg: unknown) => this.eva(arg, env));
+
+      this._callUserDefinedFunction(classEnvironment.lookup('constructor'), [
+        instanceEnvironment,
+        ...args,
+      ]);
+
+      return instanceEnvironment;
+    }
+
+    // prop: (prop <instance> <name>)
+    if (exp.at(0) === 'prop') {
+      const [_tag, instance, name] = exp;
+
+      const instanceEnvironment = this.eva(instance, env);
+      return instanceEnvironment.lookup(name);
+    }
     // switch
     if (exp.at(0) === 'switch') {
-      const evaExp = this._transformer.transformerSwitchToIf(exp);
+      const evaExp = this._transformer.switchToIf(exp);
       return this.eva(evaExp, env);
     }
 
     // ++
     if (exp.at(0) === '++') {
-      const evaExp = this._transformer.transformerIncrementeToSet(exp);
+      const evaExp = this._transformer.incrementeToSet(exp);
       return this.eva(evaExp, env);
     }
     // --
     if (exp.at(0) === '--') {
-      const evaExp = this._transformer.transformerDecrementeToSet(exp);
+      const evaExp = this._transformer.decrementeToSet(exp);
       return this.eva(evaExp, env);
     }
     // +=
     if (exp.at(0) === '+=') {
-      const evaExp = this._transformer.transformerIncrementeToSet(exp);
+      const evaExp = this._transformer.incrementeToSet(exp);
       return this.eva(evaExp, env);
     }
     // -=
     if (exp.at(0) === '-=') {
-      const evaExp = this._transformer.transformerDecrementeToSet(exp);
+      const evaExp = this._transformer.decrementeToSet(exp);
       return this.eva(evaExp, env);
     }
     // functions:native/user
@@ -117,12 +159,7 @@ export class Evaluator {
         return fn(...args);
       }
       // user function
-      const activationRecord = {};
-      fn.params.map((param: any, index: number) => {
-        return (activationRecord[param] = args[index]);
-      });
-      const activationEnv = new Environment(activationRecord, fn.env);
-      return this._evalBody(fn.body, activationEnv);
+      return this._callUserDefinedFunction(fn, args);
     }
 
     throw `Type Error: ${JSON.stringify(typeof exp === 'object' ? exp.at(0) : exp)} unimplemented!`;
@@ -133,6 +170,15 @@ export class Evaluator {
       return this._evalBlock(body, env);
     }
     return this.eva(body, env);
+  }
+
+  private _callUserDefinedFunction(fn: userFnType, args: unknown[]) {
+    const activationRecord = {};
+    fn.params.map((param: any, index: number) => {
+      return (activationRecord[param] = args[index]);
+    });
+    const activationEnv = new Environment(activationRecord, fn.env);
+    return this._evalBody(fn.body, activationEnv);
   }
 
   private _evalBlock(exp: expType, env: Environment) {
