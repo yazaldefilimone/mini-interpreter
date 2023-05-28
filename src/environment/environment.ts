@@ -23,7 +23,7 @@ export class Environment {
       return this;
     }
     if (this.parent === null) {
-      throw `Variable "${name}" has not been defined.`;
+      throw `Error: variable "${name}" has not been defined.`;
     }
     return this.parent.resolve(name);
   }

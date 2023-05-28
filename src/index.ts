@@ -23,7 +23,9 @@ export function startRepl() {
 
       const evaluated = evaluator.evaGlobal(exp);
 
-      console.log(evaluated);
+      if (evaluated !== undefined && typeof evaluated !== 'object') {
+        console.log(evaluated);
+      }
 
       repl();
     });

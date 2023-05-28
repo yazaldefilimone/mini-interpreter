@@ -1,0 +1,9 @@
+(var name "Yazalde")
+
+(begin
+ (print name)
+ (var last_name  "Filimone")
+ (print last_name))
+
+(print name)
+(print last_name)

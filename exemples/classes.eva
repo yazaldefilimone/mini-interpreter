@@ -1,0 +1,13 @@
+      (class Math null
+             (begin
+              (def constructor (this x y)
+                (begin
+                 (set (prop this x) x)
+                 (set (prop this y) y)))
+
+              (def calc (this)
+                (+ (prop this x) (prop this y)))))
+
+(var math (new Math 10 20))
+
+((prop math calc) math)

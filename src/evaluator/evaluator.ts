@@ -193,7 +193,7 @@ export class Evaluator {
       return this._callUserDefinedFunction(fn, args);
     }
 
-    throw `Type Error: ${JSON.stringify(typeof exp === 'object' ? exp.at(0) : exp)} unimplemented!`;
+    throw `Error: ${JSON.stringify(typeof exp === 'object' ? exp.at(0) : exp)} unimplemented!`;
   }
 
   private _evalBody(body: unknown[], env: Environment) {

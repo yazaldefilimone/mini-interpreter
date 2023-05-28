@@ -1,0 +1,7 @@
+(def onClick (callback)
+  (begin
+   (var x 10)
+   (var y 20)
+   (callback (+ x y))))
+
+(onClick (lambda (data) (* data 10)))

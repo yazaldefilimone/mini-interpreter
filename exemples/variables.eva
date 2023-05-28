@@ -1,0 +1,5 @@
+
+(var name "Yazalde Filimone")
+(print name)
+(set name "Yazalde")
+(print name)
