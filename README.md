@@ -38,6 +38,8 @@ npm i
 
 # lambda/arrow function(js)
 
+use `def` to define function
+
 ```cljs
 (def onClick (callback)
   (begin
@@ -46,6 +48,11 @@ npm i
    (callback (+ x y))))
 
 (onClick (lambda (data) (* data 10)))
+
+```
+
+```cljs
+ ((lambda (x) (* x x)) 2)
 
 ```
 
