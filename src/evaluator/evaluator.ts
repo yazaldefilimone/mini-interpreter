@@ -1,6 +1,7 @@
 import { Environment, globalEnvironment } from 'environment';
 import { Transformer } from 'transformer';
-
+import parser from '../parser/parser';
+import fs from 'fs';
 type expType = any;
 type userFnType = {
   params: unknown[];
@@ -134,6 +135,25 @@ export class Evaluator {
       const [_tag, className] = exp;
       console.log({ className });
       return this.eva(className, env)?.parent;
+    }
+
+    // modules
+    if (exp.at(0) === 'module') {
+      const [_tag, name, body] = exp;
+      const moduleEnvironment = new Environment({}, env);
+
+      this._evalBody(body, moduleEnvironment);
+      return env.define(name, moduleEnvironment);
+    }
+
+    // import
+    if (exp.at(0) === 'import') {
+      const [_tag, name] = exp;
+      const path = `./modules/${name}.eva`;
+      const moduleSource = fs.readFileSync(path, 'utf-8');
+      const body = parser.parse(`(begin ${moduleSource})`);
+      const moduleExpression = ['module', name, body];
+      return this.eva(moduleExpression, env);
     }
     // switch
     if (exp.at(0) === 'switch') {
