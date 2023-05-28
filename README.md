@@ -1,11 +1,13 @@
 # start
 
-````bash
+```bash
 git clone https://github.com/yazaldefilimonepinto/crafting-an-interpreter.git
 
 cd crafting-an-interpreter
 
 npm i
+
+```
 ```bash
 ❯ npm run dev:file ./exemples/while.eva
 
