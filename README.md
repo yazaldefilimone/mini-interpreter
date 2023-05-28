@@ -1,9 +1,9 @@
 # start
 
 ```bash
-git clone https://github.com/yazaldefilimonepinto/crafting-an-interpreter.git
+git clone https://github.com/yazaldefilimonepinto/mini-interpreter.git
 
-cd crafting-an-interpreter
+cd mini-interpreter
 
 npm i
 
